@@ -7,6 +7,7 @@ echo "Date: $(date)"
 
 
 check_memory() {
+	echo ""
 	echo "------MEMORY USAGE------"
 	#memory used percentage
         mem_total=$(free -m | awk '/Mem:/{print $2}')
@@ -27,6 +28,7 @@ check_memory() {
         echo "Free Memory: $(free -m | awk 'NR==2{print $4}') MB"
 }
 check_disk(){
+	echo ""
 	echo "------DISK USAGE------"
 	#Disk percentage usage
         disk_perc=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
@@ -45,6 +47,7 @@ check_disk(){
 
 }
 check_network(){
+	echo ""
 	echo "----NETWORK----"
 	#hostname
 	echo "Hostname :$(hostname)"
@@ -54,11 +57,9 @@ check_network(){
 	echo "Ip address:"
 	ip addr show | grep "inet" | grep -v "127.0.0.1"
 	#Deafult gateway route
-	echo "Default Route:"
-	ip route | grep "default"
+	echo "Default Route: $(ip route | grep "default")"
 	#Routing table
-	echo "Routing tables:"
-        ip route | grep -v "default"
+	echo "Routing tables: $( ip route | grep -v "default")"
 	#listening ports
         echo "Listening ports:"
         ss -tulpn |  grep -iE "HTTP/HTTPS"
@@ -76,7 +77,8 @@ check_network(){
 	fi
 
 }	
-echo "=========CHECK COMPLETE========="
 check_memory
 check_disk
 check_network
+echo "=========CHECK COMPLETE========="
+
