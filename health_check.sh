@@ -40,7 +40,7 @@ check_network(){
 	echo "Routing tables:"
         ip route | grep -v "default"
         echo "Listening ports:"
-        ss -tulpn
+        ss -tulpn |  grep -iE "HTTP/HTTPS"
 }	
 echo "=========CHECK COMPLETE========="
 check_memory
