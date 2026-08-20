@@ -7,7 +7,7 @@ echo "Date: $(date)"
 
 
 check_memory() {
-	echo"------MEMORY USAGE------"
+	echo "------MEMORY USAGE------"
         mem_total=$(free -m | awk '/Mem:/{print $2}')
         mem_used=$(free -m | awk '/Mem:/{print $3}')
         mem_perc=$((mem_used *100 /mem_total))
@@ -21,7 +21,7 @@ check_memory() {
 }
 check_disk(){
 	echo "------DISK USAGE------"
-        disk_perc=$(df / | awk 'NR==2 {print $5}' | tr -d' %')
+        disk_perc=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
         echo "Disk Usage: ${disk_perc}%"
         if [ "$disk_perc" -ge 80 ];then
 	        echo 'WARNING: Disk usage high!'
