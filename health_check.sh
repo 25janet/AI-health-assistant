@@ -31,6 +31,10 @@ check_disk(){
         else 
 	        echo 'Disk Status: OK'
         fi
+        echo "Total disk usage: $(df -h --total | awk 'NR==20{print $2}')"
+        echo "Used Disk space: $(df -h --total |  awk 'NR==20{print $3}')"
+        echo "Available Disk space: $(df -h --total | awk 'NR==20{print $4}')"
+
 }
 check_network(){
 	echo "----NETWORK----"
