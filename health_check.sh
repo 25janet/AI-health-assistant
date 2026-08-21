@@ -70,15 +70,57 @@ check_network(){
         interface_status=$(ip link show "$active_interface" | awk '/state/ {print $9}')
         echo "Interface status : $interface_status"
 	#connectivity test
-        if  ping -c 8 -W 2 8.8.8.8 > /dev/null 2>&1 ]; then
+        if  ping -c 8 -W 2 8.8.8.8 > /dev/null 2>&1 ; then
 	        echo "Connectivity: ONLINE"
 	else
            	echo "Connectivity: OFFLINE"
 	fi
 
 }	
+check_cpu(){
+	echo ""
+        echo "--------CPU USAGE--------"
+	#model name	
+        grep -m 1 -i "model name" /proc/cpuinfo
+	#cpu cores
+        grep -iE "cpu cores" /proc/cpuinfo | head -n 1
+	#cpu load averages
+        echo "Load  average:"
+        echo "1 minute: $(awk '{print $1}' /proc/loadavg)"
+        echo "5 minute: $(awk '{print $2}' /proc/loadavg)"
+        echo "15 minute: $(awk '{print $3}' /proc/loadavg)"
+        #calculate the system uptime
+        hour_uptime=$(uptime -p | awk '{print $2}')
+        minute_uptime=$(uptime -p | awk '{print $4}')
+        echo "Uptime: $hour_uptime hours, $minute_uptime minutes "
+
+}
+health_check_summary(){
+	echo ""
+	echo "------Health check Summary------"
+	if [ "$mem_perc" -lt 70 ];then
+		echo "Memory:  $mem_perc [OK]"
+	elif [ "mem_perc" -le 85 ];then
+		echo "Memory: $mem_perc [WARNING]"
+	else
+		echo "Memory: $mem_perc [CRITICAL]"
+	fi
+	if [ "$disk_perc" -lt 70 ];then
+		echo "Disk: $disk_perc [OK]"
+	elif [ "disk_perc" -le 85 ];then
+		echo "Disk: $disk_perc [WARNING]"
+	else 
+		echo "Disk: $disk_perc [CRITICAL]"
+	fi
+	}
+
+
+
+
 check_memory
 check_disk
 check_network
+check_cpu
+health_check_summary
 echo "=========CHECK COMPLETE========="
 
