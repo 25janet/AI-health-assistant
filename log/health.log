@@ -1,0 +1,141 @@
+==========SYSTEM HEALTH CHECK==========
+Hostname: DESKTOP-FSP092R
+User: 
+Date: Sat Aug 22 16:53:02 EAT 2026
+
+------MEMORY USAGE------
+Memory usage: 11%
+Memory status: OK
+Total Memory: 3864 MB
+Used Memory: 457 MB
+Free Memory: 3337 MB
+
+------DISK USAGE------
+Disk Usage: 1%
+Disk Status: OK
+Total disk usage: 1.5T
+Used Disk space: 249G
+Available Disk space: 1.2T
+
+----NETWORK----
+Hostname :DESKTOP-FSP092R
+Host IP address: 172.21.140.186 
+Ip address:
+    inet6 ::1/128 scope host proto kernel_lo 
+    inet 172.21.140.186/20 brd 172.21.143.255 scope global eth0
+    inet6 fe80::215:5dff:fe9b:1661/64 scope link proto kernel_ll 
+Default Route: default via 172.21.128.1 dev eth0 proto kernel 
+Routing tables: 172.21.128.0/20 dev eth0 proto kernel scope link src 172.21.140.186 
+Listening ports:
+Active interface : eth0
+Interface status : UP
+Connectivity: ONLINE
+
+--------CPU USAGE--------
+model name	: Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz
+cpu cores	: 2
+Load  average:
+1 minute: 0.00
+5 minute: 0.00
+15 minute: 0.00
+Uptime: up 36 minutes
+
+------Health check Summary------
+Memory:  11 [OK]
+Disk: 1 [OK]
+CPU: 100 [CRITICAL]
+=========CHECK COMPLETE=========
+==========SYSTEM HEALTH CHECK==========
+Hostname: DESKTOP-FSP092R
+User: 
+Date: Sat Aug 22 16:54:01 EAT 2026
+
+------MEMORY USAGE------
+Memory usage: 11%
+Memory status: OK
+Total Memory: 3864 MB
+Used Memory: 458 MB
+Free Memory: 3327 MB
+
+------DISK USAGE------
+Disk Usage: 1%
+Disk Status: OK
+Total disk usage: 1.5T
+Used Disk space: 249G
+Available Disk space: 1.2T
+
+----NETWORK----
+Hostname :DESKTOP-FSP092R
+Host IP address: 172.21.140.186 
+Ip address:
+    inet6 ::1/128 scope host proto kernel_lo 
+    inet 172.21.140.186/20 brd 172.21.143.255 scope global eth0
+    inet6 fe80::215:5dff:fe9b:1661/64 scope link proto kernel_ll 
+Default Route: default via 172.21.128.1 dev eth0 proto kernel 
+Routing tables: 172.21.128.0/20 dev eth0 proto kernel scope link src 172.21.140.186 
+Listening ports:
+Active interface : eth0
+Interface status : UP
+Connectivity: ONLINE
+
+--------CPU USAGE--------
+model name	: Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz
+cpu cores	: 2
+Load  average:
+1 minute: 0.08
+5 minute: 0.02
+15 minute: 0.01
+Uptime: up 37 minutes
+
+------Health check Summary------
+Memory:  11 [OK]
+Disk: 1 [OK]
+CPU: 4 [OK]
+=========CHECK COMPLETE=========
+==========SYSTEM HEALTH CHECK==========
+Hostname: DESKTOP-FSP092R
+User: 
+Date: Sat Aug 22 16:55:01 EAT 2026
+
+------MEMORY USAGE------
+Memory usage: 12%
+Memory status: OK
+Total Memory: 3864 MB
+Used Memory: 467 MB
+Free Memory: 3318 MB
+
+------DISK USAGE------
+Disk Usage: 1%
+Disk Status: OK
+Total disk usage: 1.5T
+Used Disk space: 249G
+Available Disk space: 1.2T
+
+----NETWORK----
+Hostname :DESKTOP-FSP092R
+Host IP address: 172.21.140.186 
+Ip address:
+    inet6 ::1/128 scope host proto kernel_lo 
+    inet 172.21.140.186/20 brd 172.21.143.255 scope global eth0
+    inet6 fe80::215:5dff:fe9b:1661/64 scope link proto kernel_ll 
+Default Route: default via 172.21.128.1 dev eth0 proto kernel 
+Routing tables: 172.21.128.0/20 dev eth0 proto kernel scope link src 172.21.140.186 
+Listening ports:
+Active interface : eth0
+Interface status : UP
+Connectivity: ONLINE
+
+--------CPU USAGE--------
+model name	: Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz
+cpu cores	: 2
+Load  average:
+1 minute: 0.03
+5 minute: 0.01
+15 minute: 0.00
+Uptime: up 38 minutes
+
+------Health check Summary------
+Memory:  12 [OK]
+Disk: 1 [OK]
+CPU: 4 [OK]
+=========CHECK COMPLETE=========
