@@ -15,15 +15,20 @@ check_memory() {
         mem_perc=$((mem_used *100 /mem_total))
         echo "Memory usage: ${mem_perc}%"
 
-        if [ "$mem_perc" -ge 80 ];then
+        if [ "$mem_perc" -ge 85 ];then
+	       echo 'CRITICAL: Memory usage high!'
+        elif [ "$mem_perc" -ge 70 ]; then
 	       echo 'WARNING: Memory usage high!'
         else
 	       echo 'Memory status: OK'
         fi
+
 	#total memory
         echo "Total Memory: $(free -m | awk 'NR==2{print $2}') MB"
+
 	#used memory
         echo "Used Memory: $(free -m | awk 'NR==2{print $3}') MB"
+
 	#free memory
         echo "Free Memory: $(free -m | awk 'NR==2{print $4}') MB"
 }
@@ -38,12 +43,15 @@ check_disk(){
         else 
 	        echo 'Disk Status: OK'
         fi
+
 	#total disk space
-        echo "Total disk usage: $(df -h --total | awk 'NR==20{print $2}')"
+        echo "Total disk usage: $(df -h --total | awk '/total/{print $2}')"
+
 	#used disk space
-        echo "Used Disk space: $(df -h --total |  awk 'NR==20{print $3}')"
+        echo "Used Disk space: $(df -h --total |  awk '/total/{print $3}')"
+
 	#available disk space
-        echo "Available Disk space: $(df -h --total | awk 'NR==20{print $4}')"
+        echo "Available Disk space: $(df -h --total | awk '/total/{print $4}')"
 
 }
 check_network(){
@@ -62,7 +70,7 @@ check_network(){
 	echo "Routing tables: $( ip route | grep -v "default")"
 	#listening ports
         echo "Listening ports:"
-        ss -tulpn |  grep -iE "HTTP/HTTPS"
+        ss -tulpn |  grep -iE ":80 |:443"
 	#active interfaces
         active_interface=$(ip route | awk '/default/ {print $5; exit}')
         echo "Active interface : $active_interface"
@@ -82,17 +90,23 @@ check_cpu(){
         echo "--------CPU USAGE--------"
 	#model name	
         grep -m 1 -i "model name" /proc/cpuinfo
+
 	#cpu cores
         grep -iE "cpu cores" /proc/cpuinfo | head -n 1
+
 	#cpu load averages
         echo "Load  average:"
         echo "1 minute: $(awk '{print $1}' /proc/loadavg)"
         echo "5 minute: $(awk '{print $2}' /proc/loadavg)"
         echo "15 minute: $(awk '{print $3}' /proc/loadavg)"
+
         #calculate the system uptime
         hour_uptime=$(uptime -p | awk '{print $2}')
         minute_uptime=$(uptime -p | awk '{print $4}')
-        echo "Uptime: $hour_uptime hours, $minute_uptime minutes "
+	echo "Uptime: $(uptime -p)"
+	cpu_usage=$(top -bn1 | awk '/Cpu\(s\)/ {print 100 - $8}')
+	cpu_usage=${cpu_usage%.*}
+
 
 }
 health_check_summary(){
@@ -100,17 +114,24 @@ health_check_summary(){
 	echo "------Health check Summary------"
 	if [ "$mem_perc" -lt 70 ];then
 		echo "Memory:  $mem_perc [OK]"
-	elif [ "mem_perc" -le 85 ];then
+	elif [ "$mem_perc" -le 85 ];then
 		echo "Memory: $mem_perc [WARNING]"
 	else
 		echo "Memory: $mem_perc [CRITICAL]"
 	fi
 	if [ "$disk_perc" -lt 70 ];then
 		echo "Disk: $disk_perc [OK]"
-	elif [ "disk_perc" -le 85 ];then
+	elif [ "$disk_perc" -le 85 ];then
 		echo "Disk: $disk_perc [WARNING]"
 	else 
 		echo "Disk: $disk_perc [CRITICAL]"
+	fi
+	if [ "$cpu_usage" -lt 70 ];then
+		echo "CPU: $cpu_usage [OK]"
+	elif [ "$cpu_usage" -le 90 ];then
+		echo "CPU: $cpu_usage [WARNING]"
+	else
+		echo "CPU: $cpu_usage [CRITICAL]"
 	fi
 	}
 
