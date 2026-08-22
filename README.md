@@ -112,7 +112,7 @@ Listening ports:
 
 ---
 
-# 🟡 Stage 2 — Automation with Cron
+# 🟢 Stage 2 — Automation with Cron
 
 The health checker will eventually run automatically using cron.
 
@@ -517,8 +517,8 @@ Combine the systems into an AI-assisted DevOps health platform.
 
 ### In progress
 
-* [ ] Cron automation
-* [ ] Health-check logging
+* [X] Cron automation
+* [X] Health-check logging
 * [ ] Git workflow
 * [ ] GitLab repository
 
