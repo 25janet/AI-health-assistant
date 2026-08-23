@@ -112,7 +112,7 @@ check_cpu(){
 health_check_summary(){
 	echo ""
 	echo "---------Health check Summary--------"
-	 [ "$mem_perc" -lt 70 ];then
+        if  [ "$mem_perc" -lt 70 ];then
 		echo "Memory:  $mem_perc [OK]"
 	elif [ "$mem_perc" -le 85 ];then
 		echo "Memory: $mem_perc [WARNING]"
