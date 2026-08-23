@@ -8,7 +8,7 @@ echo "Date: $(date)"
 
 check_memory() {
 	echo ""
-	echo "------MEMORY USAGE------"
+	echo "------MEMORY USAGE-------"
 	#memory used percentage
         mem_total=$(free -m | awk '/Mem:/{print $2}')
         mem_used=$(free -m | awk '/Mem:/{print $3}')
@@ -34,7 +34,7 @@ check_memory() {
 }
 check_disk(){
 	echo ""
-	echo "------DISK USAGE------"
+	echo "-------DISK USAGE-------"
 	#Disk percentage usage
         disk_perc=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
         echo "Disk Usage: ${disk_perc}%"
@@ -56,7 +56,7 @@ check_disk(){
 }
 check_network(){
 	echo ""
-	echo "----NETWORK----"
+	echo "------NETWORK------"
 	#hostname
 	echo "Hostname :$(hostname)"
 	#ip address
@@ -87,7 +87,7 @@ check_network(){
 }	
 check_cpu(){
 	echo ""
-        echo "--------CPU USAGE--------"
+        echo "----------CPU USAGE----------"
 	#model name	
         grep -m 1 -i "model name" /proc/cpuinfo
 
@@ -111,8 +111,8 @@ check_cpu(){
 }
 health_check_summary(){
 	echo ""
-	echo "------Health check Summary------"
-	if [ "$mem_perc" -lt 70 ];then
+	echo "---------Health check Summary--------"
+	 [ "$mem_perc" -lt 70 ];then
 		echo "Memory:  $mem_perc [OK]"
 	elif [ "$mem_perc" -le 85 ];then
 		echo "Memory: $mem_perc [WARNING]"
