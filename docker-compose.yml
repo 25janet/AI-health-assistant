@@ -1,0 +1,13 @@
+name: linux-health-check
+services:
+    health-check:
+      build:
+        context: .
+      container_name: health_check
+      volumes: 
+              - ./log:/app/logs
+      networks: 
+              - health-net
+networks:
+    health-net:
+          driver: bridge
