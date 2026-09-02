@@ -138,7 +138,7 @@ health.log
 
 ---
 
-# 🟠 Stage 3 — Git and GitLab
+# 🟢 Stage 3 — Git and GitLab
 
 The project will be managed using Git and GitLab.
 
@@ -182,7 +182,7 @@ The project will use GitLab to practice:
 
 ---
 
-# 🔵 Stage 4 — Monitoring and Alerts
+# 🟢 Stage 4 — Monitoring and Alerts
 
 The project can eventually become more than a simple health checker.
 
@@ -519,15 +519,15 @@ Combine the systems into an AI-assisted DevOps health platform.
 
 * [X] Cron automation
 * [X] Health-check logging
-* [ ] Git workflow
-* [ ] GitLab repository
+* [X] Git workflow
+* [X] GitLab repository
 
 ### Future
 
 * [ ] Process monitoring
-* [ ] Alerts
+* [X] Alerts
 * [ ] CI/CD
-* [ ] Docker
+* [X] Docker
 * [ ] Monitoring dashboard
 * [ ] LLM integration
 * [ ] RAG knowledge base
