@@ -26,9 +26,20 @@ pipeline {
 	post {
 		success {
 			echo 'Linux Health Check pipeline completed successfully!'
+			githubNotify(
+					context: 'Jenkins'
+					description: 'Linux Health check pipeine passed'
+					status: 'SUCCESS'
+			)
+
 		}
 		failure {
 			echo 'Linux Health Check pipeline failed!'
+			githubNotify(
+					context: 'Jenkins'
+					description: 'Linux Health check pipeline failed'
+					status: 'FAILED'
+			)
 		}
 	}
 }
