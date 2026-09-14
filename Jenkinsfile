@@ -27,8 +27,8 @@ pipeline {
 		success {
 			echo 'Linux Health Check pipeline completed successfully!'
 			githubNotify(
-					context: 'Jenkins'
-					description: 'Linux Health check pipeine passed'
+					context: 'Jenkins',
+					description: 'Linux Health check pipeine passed',
 					status: 'SUCCESS'
 			)
 
@@ -36,10 +36,11 @@ pipeline {
 		failure {
 			echo 'Linux Health Check pipeline failed!'
 			githubNotify(
-					context: 'Jenkins'
-					description: 'Linux Health check pipeline failed'
+					context: 'Jenkins',
+					description: 'Linux Health check pipeline failed',
 					status: 'FAILED'
 			)
+
 		}
 	}
 }
