@@ -38,7 +38,7 @@ pipeline {
 			githubNotify(
 					context: 'Jenkins',
 					description: 'Linux Health check pipeline failed',
-					status: 'FAILED'
+					status: 'FAILURE'
 			)
 
 		}
