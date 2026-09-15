@@ -29,7 +29,11 @@ pipeline {
 			githubNotify(
 					context: 'Jenkins',
 					description: 'Linux Health check pipeine passed',
-					status: 'SUCCESS'
+					status: 'SUCCESS',
+					account: '25janet',
+					repo: 'AI-health-assistant',
+					credentialsId: 'github-ai-health-assistant',
+					sha: env.GIT_COMMIT
 			)
 
 		}
@@ -38,7 +42,11 @@ pipeline {
 			githubNotify(
 					context: 'Jenkins',
 					description: 'Linux Health check pipeline failed',
-					status: 'FAILURE'
+					status: 'FAILURE',
+					account: '25janet',
+					repo: 'AI-health-assistant',
+					credentialsId: 'github-ai-health-assistant',
+					sha: env.GIT_COMMIT
 			)
 
 		}
