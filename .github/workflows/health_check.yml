@@ -64,7 +64,7 @@ jobs:
 
     steps:
       - name: Checkout repository code
-        uses: actions/actions@v4
+        uses: actions/checkout@v4
       
       - name: Build Docker image
         run: docker build -t linux-health-check
