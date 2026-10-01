@@ -1,25 +1,49 @@
 pipeline {
-	agent any
+	agent {
+		docker {
+			image 'ubuntu:latest'
+		}
+	}
 	stages {
-		stage('Checkout') {
+		stage('bash-check') {
 			steps {
+				echo 'Checkout repository code'
 				checkout scm
-			}
-		}
-		stage('Validate Script'){
-			steps {
-				sh 'bash -n health_check.sh'
-			}
-		}
-		stage('Run Health Check'){
-			steps {
+
+				echo 'Check bash version'
+				sh 'bash --version'
+
+				echo 'Check Bash syntax'
+				sh 'bash -n heath_check.sh'
+			
 				sh 'chmod +x health_check.sh'
+
+				echo 'Run health check file'
 				sh './health_check.sh'
+
+				archiveArtifacts artifacts: 'log/health.log'
+			}
+		}
+		
+		stage('Python-check'){
+			steps {
+				echo 'Check python version'
+				sh 'python3 --version'
+
+				echo 'Run the python parser'
+				sh 'python3 health_parser.py'
+
+				echo 'Validate generated json file'
+				sh 'python3 -m json.tool json/health_report.json'
 			}
 		}
 		stage ('Build Docker Image'){
 			steps {
-				sh 'docker build -t linux-health-check:v1 .'
+				echo 'Building an image'
+				sh 'docker compose build'
+
+				echo 'Running health check container'
+				sh 'docker compose run --rm health_check'
 			}
 		}
 	}
