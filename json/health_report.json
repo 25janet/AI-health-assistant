@@ -1,0 +1,50 @@
+[
+    {
+        "date": "Sat Aug 22 16:53:02 EAT 2026",
+        "status": {
+            "memory": "11 [OK]",
+            "disk": "1 [OK]",
+            "cpu": "100 [CRITICAL]"
+        }
+    },
+    {
+        "date": "Sat Aug 22 16:54:01 EAT 2026",
+        "status": {
+            "memory": "11 [OK]",
+            "disk": "1 [OK]",
+            "cpu": "4 [OK]"
+        }
+    },
+    {
+        "date": "Sat Aug 22 16:55:01 EAT 2026",
+        "status": {
+            "memory": "12 [OK]",
+            "disk": "1 [OK]",
+            "cpu": "4 [OK]"
+        }
+    },
+    {
+        "date": "Tue Sep  1 12:30:01 EAT 2026",
+        "status": {
+            "memory": "12 [OK]",
+            "disk": "1 [OK]",
+            "cpu": "4 [OK]"
+        }
+    },
+    {
+        "date": "Mon Sep 14 12:00:01 EAT 2026",
+        "status": {
+            "memory": "26 [OK]",
+            "disk": "1 [OK]",
+            "cpu": "5 [OK]"
+        }
+    },
+    {
+        "date": "Mon Sep 14 12:30:01 EAT 2026",
+        "status": {
+            "memory": "28 [OK]",
+            "disk": "1 [OK]",
+            "cpu": "4 [OK]"
+        }
+    }
+]
