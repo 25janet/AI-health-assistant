@@ -1,6 +1,8 @@
 pipeline {
 	agent {
-		label 'ubuntu-latest'
+		docker {
+			image 'ubuntu:latest'
+		}
 	}
 	stages {
 		stage('bash-check') {
