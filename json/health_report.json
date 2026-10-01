@@ -2,49 +2,49 @@
     {
         "date": "Sat Aug 22 16:53:02 EAT 2026",
         "status": {
-            "memory": "11 [OK]",
-            "disk": "1 [OK]",
-            "cpu": "100 [CRITICAL]"
+            "memory": 11,
+            "disk": 1,
+            "cpu": 100
         }
     },
     {
         "date": "Sat Aug 22 16:54:01 EAT 2026",
         "status": {
-            "memory": "11 [OK]",
-            "disk": "1 [OK]",
-            "cpu": "4 [OK]"
+            "memory": 11,
+            "disk": 1,
+            "cpu": 4
         }
     },
     {
         "date": "Sat Aug 22 16:55:01 EAT 2026",
         "status": {
-            "memory": "12 [OK]",
-            "disk": "1 [OK]",
-            "cpu": "4 [OK]"
+            "memory": 12,
+            "disk": 1,
+            "cpu": 4
         }
     },
     {
         "date": "Tue Sep  1 12:30:01 EAT 2026",
         "status": {
-            "memory": "12 [OK]",
-            "disk": "1 [OK]",
-            "cpu": "4 [OK]"
+            "memory": 12,
+            "disk": 1,
+            "cpu": 4
         }
     },
     {
         "date": "Mon Sep 14 12:00:01 EAT 2026",
         "status": {
-            "memory": "26 [OK]",
-            "disk": "1 [OK]",
-            "cpu": "5 [OK]"
+            "memory": 26,
+            "disk": 1,
+            "cpu": 5
         }
     },
     {
         "date": "Mon Sep 14 12:30:01 EAT 2026",
         "status": {
-            "memory": "28 [OK]",
-            "disk": "1 [OK]",
-            "cpu": "4 [OK]"
+            "memory": 28,
+            "disk": 1,
+            "cpu": 4
         }
     }
 ]
