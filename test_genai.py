@@ -1,9 +1,9 @@
 # ============================================================
-# AI Linux Health Assistant - OpenAI API Connection Test
+# AI Linux Health Assistant - Gemini API Connection Test
 # ============================================================
 # Purpose:
 # This file tests whether our Python application can connect
-# to the OpenAI API and receive a response from an LLM.
+# to the Gemini API and receive a response from an LLM.
 #
 # This is only a test. Later, we will replace the simple
 # test question with our actual Linux health report.
@@ -15,15 +15,15 @@
 # ------------------------------------------------------------
 
 # 'os' allows Python to interact with environment variables.
-# We will use it to retrieve the model name from our .env file.
+# We will use it to retrieve our Gemini API key and model name.
 import os
 
-# 'load_dotenv' loads the variables stored in our .env file
-# into the environment so that Python can access them.
+# 'load_dotenv' loads variables stored in our .env file
+# so that Python can access them.
 from dotenv import load_dotenv
 
-# 'OpenAI' is the Python client provided by the OpenAI SDK.
-# It allows our Python program to communicate with the OpenAI API.
+# 'genai' is Google's Generative AI Python SDK.
+# It allows our Python program to communicate with Gemini.
 from google import genai
 
 
@@ -31,74 +31,77 @@ from google import genai
 # 2. Load environment variables from the .env file
 # ------------------------------------------------------------
 
-# Read the .env file in the project directory.
+# Load the variables stored in our .env file.
 #
 # Our .env file contains configuration such as:
 #
-# OPENAI_API_KEY=our_secret_key
-# OPENAI_MODEL=the_model_we_want_to_use
+# GEMINI_API_KEY=our_secret_key
+# GEMINI_MODEL=the_model_we_want_to_use
 #
-# We keep these values outside our Python code so that
-# sensitive information is not hard-coded into the program.
+# We keep the API key outside our Python code so that
+# the secret is not hard-coded into the program.
 load_dotenv()
 
 
 # ------------------------------------------------------------
-# 3. Get the model name from the environment
+# 3. Get Gemini configuration from the environment
 # ------------------------------------------------------------
 
 # os.getenv() retrieves the value of an environment variable.
 #
 # For example, if .env contains:
 #
-# OPENAI_MODEL=gpt-5.5
+# GEMINI_MODEL=gemini-2.5-flash-lite
 #
 # then:
 #
-# model = os.getenv("OPENAI_MODEL")
+# model = os.getenv("GEMINI_MODEL")
 #
 # gives us:
 #
-# model = "gpt-5.5"
-#
-# This allows us to change the model from the .env file
-# without modifying this Python program.
+# model = "gemini-2.5-flash-lite"
+
 model = os.getenv("GEMINI_MODEL")
 
-
-# ------------------------------------------------------------
-# 4. Create the OpenAI client
-# ------------------------------------------------------------
-
-# Create an OpenAI client that our Python program will use
-# to communicate with the OpenAI API.
+# Retrieve the Gemini API key from the environment.
 #
-# The OpenAI SDK automatically looks for the
-# OPENAI_API_KEY environment variable for authentication.
-#
-# We do NOT put the actual API key directly in this file.
-client = genai()
+# We NEVER print the API key because it is a secret.
+api_key = os.getenv("GEMINI_API_KEY")
+print("Model being used:", model)
+print("API key configured:", api_key is not None)
 
 
 # ------------------------------------------------------------
-# 5. Send a request to the LLM
+# 4. Create the Gemini client
 # ------------------------------------------------------------
 
-# client.responses.create() sends a request to the
-# OpenAI Responses API.
+# Create a Gemini client using our API key.
 #
-# 'model' tells the API which model should process our request.
+# The client is the object our Python program will use
+# to communicate with Google's Gemini API.
+client = genai.Client(api_key=api_key)
+
+
+# ------------------------------------------------------------
+# 5. Send a request to Gemini
+# ------------------------------------------------------------
+
+# generate_content() sends our request to the Gemini model.
 #
-# 'input' contains the instruction/question we want
-# the LLM to respond to.
+# 'model' tells Gemini which model should process our request.
+#
+# 'contents' contains the question/instruction that we
+# want the LLM to answer.
 #
 # For now, we are using a simple test question.
-# Later, this input will contain information from:
+#
+# Later, we will replace this with information from:
 #
 # json/health_report.json
 #
-# so that the LLM can analyze our Linux system health.
-response = client.responses.create(
+# so that Gemini can analyze our actual Linux health data.
+
+interaction = client.interactions.create(
     model=model,
     input=(
         "Say hello and explain in one sentence "
@@ -106,13 +109,14 @@ response = client.responses.create(
     )
 )
 
+print(interaction.output_text)
+
 
 # ------------------------------------------------------------
 # 6. Display the LLM's response
 # ------------------------------------------------------------
 
-# response.output_text extracts the actual text generated
-# by the LLM from the API response.
+# response.text contains the text generated by Gemini.
 #
-# print() then displays that text in our terminal.
-print(response.output_text)
+# print() displays that response in our terminal.
+print(interaction.output_text)
