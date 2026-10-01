@@ -1,6 +1,6 @@
 pipeline {
 	agent {
-		label ubuntu-latest
+		label 'ubuntu-latest'
 	}
 	stages {
 		stage('bash-check') {
