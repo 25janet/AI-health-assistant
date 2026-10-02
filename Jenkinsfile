@@ -23,7 +23,7 @@ pipeline {
                 sh 'mkdir -p data/raw'
 
                 echo 'Run health check'
-                sh './health_check.sh > data/raw/health.log 2>&1'
+                sh './monitoring/health_check.sh > data/raw/health.log 2>&1'
 
                 echo 'Archive health log'
                 archiveArtifacts artifacts: 'data/raw/health.log'
