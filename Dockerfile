@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     hostname \
     && rm -rf /var/lib/apt/lists/*
 
-COPY health_check.sh /app/health_check.sh
+COPY monitoring/health_check.sh /app/health_check.sh
 
 RUN chmod +x /app/health_check.sh
 
