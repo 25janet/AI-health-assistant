@@ -7,7 +7,9 @@ in_summary = False
 metrics = {}
 
 with open("data/raw/health.log", "r", encoding="utf-8") as file:
+
     for line in file:
+
         stripped_line = line.strip()
 
         # 1. Capture the date
@@ -24,6 +26,7 @@ with open("data/raw/health.log", "r", encoding="utf-8") as file:
 
             # Detect the end of the summary
             if stripped_line.startswith("========="):
+
                 in_summary = False
 
                 log_entry = {
@@ -35,6 +38,7 @@ with open("data/raw/health.log", "r", encoding="utf-8") as file:
 
             # Process metric lines
             elif ":" in stripped_line:
+
                 key, val = stripped_line.split(":", 1)
 
                 # Example:
@@ -42,17 +46,30 @@ with open("data/raw/health.log", "r", encoding="utf-8") as file:
                 # parts = ["28", "[OK]"]
                 parts = val.strip().split()
 
-                # Take only the number
+                # Extract the numerical value
                 number = int(parts[0])
 
-                metrics[key.strip().lower()] = number
+                # Extract the health status
+                status = parts[1].strip("[]")
+
+                metrics[key.strip().lower()] = {
+                    "usage_percent": number,
+                    "status": status
+                }
 
 
 # Convert Python data to JSON
 json_string = json.dumps(json_output, indent=4)
 
+
 # Save JSON file
-with open("data/processed/health_report.json", "w", encoding="utf-8") as json_file:
+with open(
+    "data/processed/health_report.json",
+    "w",
+    encoding="utf-8"
+) as json_file:
+
     json_file.write(json_string)
+
 
 print("Health report successfully converted to JSON.")

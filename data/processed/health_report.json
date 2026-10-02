@@ -2,49 +2,103 @@
     {
         "date": "Sat Aug 22 16:53:02 EAT 2026",
         "status": {
-            "memory": 11,
-            "disk": 1,
-            "cpu": 100
+            "memory": {
+                "usage_percent": 11,
+                "status": "OK"
+            },
+            "disk": {
+                "usage_percent": 1,
+                "status": "OK"
+            },
+            "cpu": {
+                "usage_percent": 100,
+                "status": "CRITICAL"
+            }
         }
     },
     {
         "date": "Sat Aug 22 16:54:01 EAT 2026",
         "status": {
-            "memory": 11,
-            "disk": 1,
-            "cpu": 4
+            "memory": {
+                "usage_percent": 11,
+                "status": "OK"
+            },
+            "disk": {
+                "usage_percent": 1,
+                "status": "OK"
+            },
+            "cpu": {
+                "usage_percent": 4,
+                "status": "OK"
+            }
         }
     },
     {
         "date": "Sat Aug 22 16:55:01 EAT 2026",
         "status": {
-            "memory": 12,
-            "disk": 1,
-            "cpu": 4
+            "memory": {
+                "usage_percent": 12,
+                "status": "OK"
+            },
+            "disk": {
+                "usage_percent": 1,
+                "status": "OK"
+            },
+            "cpu": {
+                "usage_percent": 4,
+                "status": "OK"
+            }
         }
     },
     {
         "date": "Tue Sep  1 12:30:01 EAT 2026",
         "status": {
-            "memory": 12,
-            "disk": 1,
-            "cpu": 4
+            "memory": {
+                "usage_percent": 12,
+                "status": "OK"
+            },
+            "disk": {
+                "usage_percent": 1,
+                "status": "OK"
+            },
+            "cpu": {
+                "usage_percent": 4,
+                "status": "OK"
+            }
         }
     },
     {
         "date": "Mon Sep 14 12:00:01 EAT 2026",
         "status": {
-            "memory": 26,
-            "disk": 1,
-            "cpu": 5
+            "memory": {
+                "usage_percent": 26,
+                "status": "OK"
+            },
+            "disk": {
+                "usage_percent": 1,
+                "status": "OK"
+            },
+            "cpu": {
+                "usage_percent": 5,
+                "status": "OK"
+            }
         }
     },
     {
         "date": "Mon Sep 14 12:30:01 EAT 2026",
         "status": {
-            "memory": 28,
-            "disk": 1,
-            "cpu": 4
+            "memory": {
+                "usage_percent": 28,
+                "status": "OK"
+            },
+            "disk": {
+                "usage_percent": 1,
+                "status": "OK"
+            },
+            "cpu": {
+                "usage_percent": 4,
+                "status": "OK"
+            }
         }
     }
 ]

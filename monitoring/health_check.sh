@@ -38,8 +38,10 @@ check_disk(){
 	#Disk percentage usage
         disk_perc=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
         echo "Disk Usage: ${disk_perc}%"
-        if [ "$disk_perc" -ge 80 ];then
-	        echo 'WARNING: Disk usage high!'
+        if [ "$disk_perc" -gt 80 ];then
+	        echo 'CRITICAL! Disk usage high!'
+		elif [ "$disk_perc" -ge 75 ];then
+			echo 'WARNING! Disk usage high!'
         else 
 	        echo 'Disk Status: OK'
         fi
