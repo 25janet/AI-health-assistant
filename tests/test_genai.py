@@ -24,7 +24,7 @@ client = genai.Client(api_key=api_key)
 
 
 # 5. Read the health report from the JSON file
-with open("json/health_report.json", "r", encoding="utf-8") as file:
+with open("data/processed/health_report.json", "r", encoding="utf-8") as file:
 
     # Convert JSON data into Python data
     health_report = json.load(file)

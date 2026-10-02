@@ -31,7 +31,7 @@ client = genai.Client(api_key=api_key)
 # 3. Load the Linux health report
 # ------------------------------------------------------------
 
-with open("json/health_report.json", "r", encoding="utf-8") as file:
+with open("data/processed/health_report.json", "r", encoding="utf-8") as file:
     health_report = json.load(file)
 
 

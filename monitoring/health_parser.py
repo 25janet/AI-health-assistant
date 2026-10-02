@@ -6,7 +6,7 @@ current_date = None
 in_summary = False
 metrics = {}
 
-with open("log/health.log", "r", encoding="utf-8") as file:
+with open("data/raw/health.log", "r", encoding="utf-8") as file:
     for line in file:
         stripped_line = line.strip()
 
@@ -52,7 +52,7 @@ with open("log/health.log", "r", encoding="utf-8") as file:
 json_string = json.dumps(json_output, indent=4)
 
 # Save JSON file
-with open("json/health_report.json", "w", encoding="utf-8") as json_file:
+with open("data/processed/health_report.json", "w", encoding="utf-8") as json_file:
     json_file.write(json_string)
 
 print("Health report successfully converted to JSON.")

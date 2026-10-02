@@ -14,19 +14,19 @@ pipeline {
                 sh 'bash --version'
 
                 echo 'Check Bash syntax'
-                sh 'bash -n health_check.sh'
+                sh 'bash -n monitoring/health_check.sh'
 
                 echo 'Make health_check.sh executable'
-                sh 'chmod +x health_check.sh'
+                sh 'chmod +x monitoring/health_check.sh'
 
                 echo 'Create log directory'
-                sh 'mkdir -p log'
+                sh 'mkdir -p data/raw'
 
                 echo 'Run health check'
-                sh './health_check.sh > log/health.log 2>&1'
+                sh './health_check.sh > data/raw/health.log 2>&1'
 
                 echo 'Archive health log'
-                archiveArtifacts artifacts: 'log/health.log'
+                archiveArtifacts artifacts: 'data/raw/health.log'
             }
         }
 
@@ -38,10 +38,10 @@ pipeline {
                 sh 'python3 --version'
 
                 echo 'Run the Python parser'
-                sh 'python3 health_parser.py'
+                sh 'python3 monitoring/health_parser.py'
 
                 echo 'Validate generated JSON file'
-                sh 'python3 -m json.tool json/health_report.json'
+                sh 'python3 -m json.tool data/processed/health_report.json'
             }
         }
 
