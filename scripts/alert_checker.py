@@ -1,5 +1,6 @@
 import json
 import os
+import requests
 
 # --------------------------------------------------
 # File paths
@@ -8,6 +9,7 @@ import os
 HEALTH_REPORT = "data/processed/health_report.json"
 ALERT_LOG = "data/raw/alerts.log"
 STATE_FILE = "data/processed/alert_state.json"
+WEBHOOK_URL = "http://127.0.0.1:5001/webhook"
 
 
 # --------------------------------------------------
@@ -124,6 +126,10 @@ for metric in ["memory", "disk", "cpu"]:
 # Write events
 # --------------------------------------------------
 
+# --------------------------------------------------
+# Send notifications
+# --------------------------------------------------
+
 if events:
 
     with open(
@@ -142,9 +148,39 @@ if events:
                 f"{event}\n"
             )
 
-
     for event in events:
+
         print(event)
+
+        payload = {
+            "alert": event,
+            "date": date
+        }
+
+        try:
+
+            response = requests.post(
+                WEBHOOK_URL,
+                json=payload,
+                timeout=5
+            )
+
+            if response.status_code == 200:
+
+                print("Webhook notification sent.")
+
+            else:
+
+                print(
+                    f"Webhook failed with status "
+                    f"{response.status_code}"
+                )
+
+        except requests.RequestException as error:
+
+            print(
+                f"Webhook notification failed: {error}"
+            )
 
 else:
 
