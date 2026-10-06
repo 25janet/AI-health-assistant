@@ -299,7 +299,7 @@ The LLM can then use this information when generating its response.
 
 ---
 
-# 🚀 Stage 7 — AI DevOps Health Assistant
+#  Stage 7 — AI DevOps Health Assistant
 
 The final version could combine everything:
 
@@ -346,7 +346,7 @@ The assistant could answer questions such as:
 
 ---
 
-# 🛡️ Human Approval
+#  Human Approval
 
 The AI should not automatically make dangerous production changes.
 
@@ -441,7 +441,7 @@ This structure is only a future target. The project will start much smaller.
 
 ---
 
-# 📚 Learning Roadmap
+#  Learning Roadmap
 
 The project will be developed alongside learning.
 
@@ -500,7 +500,7 @@ Combine the systems into an AI-assisted DevOps health platform.
 
 ---
 
-# 🎯 Current Status
+#  Current Status
 
 **Current phase:** Linux + Bash Health Checker
 
@@ -536,7 +536,7 @@ Combine the systems into an AI-assisted DevOps health platform.
 
 ---
 
-# 💡 Project Philosophy
+#  Project Philosophy
 
 This project is intentionally designed to grow slowly.
 
@@ -570,7 +570,7 @@ Each stage should be understood before moving to the next one.
 
 ---
 
-## 🌱 Long-Term Goal
+##  Long-Term Goal
 
 Build a practical AI-powered Linux/DevOps assistant that combines **system monitoring, automation, observability, LLMs, and RAG** to help engineers understand and troubleshoot infrastructure.
 
