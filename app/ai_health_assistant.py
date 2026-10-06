@@ -38,6 +38,19 @@ with open("data/processed/health_report.json", "r", encoding="utf-8") as file:
 # Convert the Python data into readable JSON text
 health_report_text = json.dumps(health_report, indent=4)
 
+if os.path.exists("data/raw/alerts.log"):
+
+    with open(
+        "data/raw/alerts.log",
+        "r",
+        encoding="utf-8"
+    ) as file:
+
+        alerts_text = file.read()
+
+else:
+
+    alerts_text = "No alerts have been recorded."
 
 # ------------------------------------------------------------
 # 4. Display the assistant
@@ -109,6 +122,9 @@ Below is the Linux health monitoring history:
 
 {health_report_text}
 
+Below are alerts detected by the local monitoring system:
+
+{alerts_text}
 
 The user has asked:
 
@@ -230,6 +246,40 @@ PROCESS ANALYSIS RULES
 
 25. If process information is insufficient to answer
     the user's question, clearly say so.
+
+ALERT ANALYSIS RULES
+====================
+
+26. When the user asks about alerts, use both the
+    health report and the alert information.
+
+27. Explain what triggered the alert using the recorded
+    metric, usage percentage, and status.
+
+28. Clearly distinguish between:
+
+    - the alert detected by the monitoring system
+    - evidence available in the health report
+    - possible explanations that are not confirmed.
+
+29. When an alert concerns CPU, memory, or disk usage,
+    identify the affected metric and its recorded value.
+
+30. If process information is available for the same
+    health-check record, use it as supporting context.
+
+31. Do not automatically identify a process as the cause
+    of an alert simply because it appears in the process
+    list.
+
+32. If the alert is a recovery event, explain that the
+    monitored metric returned to an OK state.
+
+33. If there is not enough information to determine the
+    cause of an alert, explicitly say so.
+
+34. When discussing repeated alerts, distinguish between
+    repeated alert events and a single continuing condition.
 
 
 Answer the user's question directly and explain
