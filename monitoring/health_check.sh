@@ -106,9 +106,31 @@ check_cpu(){
         hour_uptime=$(uptime -p | awk '{print $2}')
         minute_uptime=$(uptime -p | awk '{print $4}')
 	echo "Uptime: $(uptime -p)"
-	cpu_usage=$(top -bn1 | awk '/Cpu\(s\)/ {print 100 - $8}')
+	cpu_usage=$(top -bn1 | awk '/Cpu\(s\)/ {
+    for (i=1; i<=NF; i++) {
+        if ($i == "id," || $i == "id") {
+            print 100 - $(i-1)
+            exit
+        }
+    }
+}')
 	cpu_usage=${cpu_usage%.*}
+	
+}
+check_processes(){
+	echo ""
+	echo "---------Top Processes-------------"
 
+	echo "Top CPU Processes: "
+	ps -eo pid,user,%cpu,%mem,comm --sort=-%cpu\
+	|grep -vE 'COMMAND|ps|head' \
+	| head -n 6
+
+	echo ""
+	echo "Top Memory Processes: "
+	ps -eo pid,user,%cpu,%mem,comm --sort=-%mem \
+	|grep -vE 'COMMAND|ps|head' \
+	| head -n 6
 
 }
 health_check_summary(){
@@ -144,6 +166,7 @@ check_memory
 check_disk
 check_network
 check_cpu
+check_processes
 health_check_summary
 echo "=========CHECK COMPLETE========="
 

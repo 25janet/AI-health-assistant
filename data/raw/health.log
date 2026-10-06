@@ -279,4 +279,71 @@ Uptime: up 1 hour, 50 minutes
 Memory:  28 [OK]
 Disk: 1 [OK]
 CPU: 4 [OK]
+=========CHECK COMPLETE========
+===========SYSTEM HEALTH CHECK==========
+Hostname: DESKTOP-FSP092R
+User: janet_john
+Date: Tue Oct  6 12:05:56 EAT 2026
+
+------MEMORY USAGE-------
+Memory usage: 37%
+Memory status: OK
+Total Memory: 3867 MB
+Used Memory: 1461 MB
+Free Memory: 129 MB
+
+-------DISK USAGE-------
+Disk Usage: 1%
+Disk Status: OK
+Total disk usage: 1.7T
+Used Disk space: 414G
+Available Disk space: 1.3T
+
+------NETWORK------
+Hostname :DESKTOP-FSP092R
+Host IP address: 172.21.140.186 10.4.0.1 
+Ip address:
+    inet6 ::1/128 scope host proto kernel_lo 
+    inet 172.21.140.186/20 brd 172.21.143.255 scope global eth0
+    inet6 fe80::215:5dff:fe02:3b8e/64 scope link proto kernel_ll 
+    inet 10.4.0.1/24 brd 10.4.0.255 scope global nerdctl0
+    inet6 fe80::ec1c:42ff:fed5:1a3f/64 scope link proto kernel_ll 
+Default Route: default via 172.21.128.1 dev eth0 proto kernel onlink 
+Routing tables: 10.4.0.0/24 dev nerdctl0 proto kernel scope link src 10.4.0.1 linkdown 
+172.21.128.0/20 dev eth0 proto kernel scope link src 172.21.140.186 
+Listening ports:
+Active interface : eth0
+Interface status : UP
+Connectivity: ONLINE
+
+----------CPU USAGE----------
+model name	: Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz
+cpu cores	: 2
+Load  average:
+1 minute: 0.01
+5 minute: 0.03
+15 minute: 0.08
+Uptime: up 2 hours, 10 minutes
+
+---------Top Processes-------------
+Top CPU Processes: 
+   2884 jenkins   3.1 16.8 java
+    419 root      0.3  1.4 containerd
+   6882 janet_j+  0.2  0.0 bash
+    101 root      0.1  0.3 systemd-udevd
+      1 root      0.0  0.3 systemd
+     55 root      0.0  0.4 systemd-journal
+
+Top Memory Processes: 
+   2884 jenkins   3.1 16.8 java
+    419 root      0.3  1.4 containerd
+    501 postgres  0.0  0.8 postgres
+    416 root      0.0  0.8 unattended-upgr
+    199 root      0.0  0.7 networkd-dispat
+   1110 root      0.0  0.6 docker-desktop-
+
+---------Health check Summary--------
+Memory:  37 [OK]
+Disk: 1 [OK]
+CPU: 4 [OK]
 =========CHECK COMPLETE=========
