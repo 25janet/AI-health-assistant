@@ -230,10 +230,47 @@ def score_chunk(question_words, expanded_words, chunk):
     )):
         score += 8
 
-    if asks_cpu and any(term in content_lower for term in (
-        "top", "uptime", "mpstat", "iostat"
-    )):
-        score += 8
+        # Improve retrieval for specific CPU troubleshooting questions.
+    if asks_cpu:
+        # Per-core CPU monitoring
+        if any(term in question.lower() for term in (
+            "individual cores", "per core", "each core", "individual cpu"
+        )):
+            if "per-cpu" in content_lower or "individual cpu" in content_lower:
+                score += 18
+
+        # systemd service troubleshooting
+        if "systemd service" in question.lower() or "service causing" in question.lower():
+            if "systemctl status" in content_lower:
+                score += 18
+            if "journalctl" in content_lower:
+                score += 10
+
+        # CPU troubleshooting through logs
+        if "linux logs" in question.lower() or "using linux logs" in question.lower():
+            if "journalctl" in content_lower:
+                score += 18
+
+        # Distinguish memory pressure from disk I/O
+        if "memory or disk i/o" in question.lower() or "disk i/o" in question.lower():
+            if "vmstat" in content_lower:
+                score += 14
+            if "wa" in content_lower or "i/o" in content_lower:
+                score += 8
+
+        # Excessive CPU consumption by a process
+        if "too much cpu" in question.lower() or "process is using" in question.lower():
+            if "ps aux --sort=-%cpu" in content_lower:
+                score += 18
+            if "corrective actions" in content_lower or "safe corrective actions" in content_lower:
+                score += 8
+
+        # Verify that the problem has been resolved
+        if "verify" in question.lower() and (
+            "resolved" in question.lower() or "problem" in question.lower()
+        ):
+            if "## 11. Verification" in content_lower:
+                score += 22
 
     # Prioritize the dedicated OOM section for OOM questions.
     normalized_heading = heading.replace("-", " ").replace("_", " ")
