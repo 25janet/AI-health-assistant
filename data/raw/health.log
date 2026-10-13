@@ -347,3 +347,62 @@ Memory:  37 [OK]
 Disk: 1 [OK]
 CPU: 4 [OK]
 =========CHECK COMPLETE=========
+==========SYSTEM HEALTH CHECK==========
+Hostname: 84f2158ed00c
+User: 
+Date: Tue Oct 13 09:18:32 UTC 2026
+
+------MEMORY USAGE-------
+Memory usage: 30%
+Memory status: OK
+Total Memory: 3867 MB
+Used Memory: 1180 MB
+Free Memory: 100 MB
+
+-------DISK USAGE-------
+Disk Usage: 1%
+Disk Status: OK
+Total disk usage: 2.2T
+Used Disk space: 150G
+Available Disk space: 2.0T
+
+------NETWORK------
+Hostname :84f2158ed00c
+Host IP address: 172.18.0.2 
+Ip address:
+    inet6 ::1/128 scope host proto kernel_lo 
+    inet 172.18.0.2/16 brd 172.18.255.255 scope global eth0
+Default Route: default via 172.18.0.1 dev eth0 
+Routing tables: 172.18.0.0/16 dev eth0 proto kernel scope link src 172.18.0.2 
+Listening ports:
+Active interface : eth0
+Interface status : UP
+Connectivity: ONLINE
+
+----------CPU USAGE----------
+model name	: Intel(R) Core(TM) i7-4600U CPU @ 2.10GHz
+cpu cores	: 2
+Load  average:
+1 minute: 0.46
+5 minute: 0.16
+15 minute: 0.14
+Uptime: up 11 hours, 40 minutes
+
+---------Top Processes-------------
+Top CPU Processes: 
+      1 root      2.2  0.0 bash
+      7 root      0.9  0.1 tee
+      6 root      0.3  0.0 bash
+     75 root      0.0  0.0 grep
+
+Top Memory Processes: 
+      7 root      0.8  0.1 tee
+      6 root      0.3  0.0 bash
+      1 root      2.2  0.0 bash
+     78 root      0.0  0.0 grep
+
+---------Health check Summary--------
+Memory:  30 [OK]
+Disk: 1 [OK]
+CPU: 2 [OK]
+=========CHECK COMPLETE=========

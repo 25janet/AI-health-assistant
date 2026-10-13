@@ -7,10 +7,21 @@ RUN apt-get update && apt-get install -y \
     iputils-ping \
     procps \
     hostname \
+    python3 \
+    python3-pip \
+    python3-venv \
     && rm -rf /var/lib/apt/lists/*
 
-COPY monitoring/health_check.sh /app/health_check.sh
+COPY monitoring/ /app/monitoring
+COPY scripts/ /app/scripts
+COPY app/ /app/app
+COPY requirements.txt /app/requirements.txt
 
-RUN chmod +x /app/health_check.sh
+RUN chmod +x /app/monitoring/health_check.sh \
+        /app/scripts/*.sh
 
-CMD ["bash", "/app/health_check.sh"]
+RUN pip3 install --break-system-packages -r requirements.txt
+RUN mkdir -p /app/data/raw \
+        /app/data/processed 
+
+CMD ["bash", "-c", "bash /app/monitoring/health_check.sh 2>&1 | tee -a /app/data/raw/health.log"]
