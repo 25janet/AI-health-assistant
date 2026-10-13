@@ -231,5 +231,84 @@
                 }
             ]
         }
+    },
+    {
+        "date": "Tue Oct 13 09:18:32 UTC 2026",
+        "status": {
+            "memory": {
+                "usage_percent": 30,
+                "status": "OK"
+            },
+            "disk": {
+                "usage_percent": 1,
+                "status": "OK"
+            },
+            "cpu": {
+                "usage_percent": 2,
+                "status": "OK"
+            }
+        },
+        "processes": {
+            "top_cpu": [
+                {
+                    "pid": 1,
+                    "user": "root",
+                    "cpu_percent": 2.2,
+                    "memory_percent": 0.0,
+                    "command": "bash"
+                },
+                {
+                    "pid": 7,
+                    "user": "root",
+                    "cpu_percent": 0.9,
+                    "memory_percent": 0.1,
+                    "command": "tee"
+                },
+                {
+                    "pid": 6,
+                    "user": "root",
+                    "cpu_percent": 0.3,
+                    "memory_percent": 0.0,
+                    "command": "bash"
+                },
+                {
+                    "pid": 75,
+                    "user": "root",
+                    "cpu_percent": 0.0,
+                    "memory_percent": 0.0,
+                    "command": "grep"
+                }
+            ],
+            "top_memory": [
+                {
+                    "pid": 7,
+                    "user": "root",
+                    "cpu_percent": 0.8,
+                    "memory_percent": 0.1,
+                    "command": "tee"
+                },
+                {
+                    "pid": 6,
+                    "user": "root",
+                    "cpu_percent": 0.3,
+                    "memory_percent": 0.0,
+                    "command": "bash"
+                },
+                {
+                    "pid": 1,
+                    "user": "root",
+                    "cpu_percent": 2.2,
+                    "memory_percent": 0.0,
+                    "command": "bash"
+                },
+                {
+                    "pid": 78,
+                    "user": "root",
+                    "cpu_percent": 0.0,
+                    "memory_percent": 0.0,
+                    "command": "grep"
+                }
+            ]
+        }
     }
 ]
