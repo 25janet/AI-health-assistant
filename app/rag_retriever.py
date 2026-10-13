@@ -152,22 +152,22 @@ def expand_query(question):
 # 5. Score how relevant each section is to a question
 # ------------------------------------------------------------
 
+
 def score_chunk(question_words, expanded_words, chunk):
     content = chunk["content"]
     content_lower = content.lower()
 
-    # Extract the Markdown heading when one exists.
+    # Extract the Markdown heading.
     heading_match = re.match(
         r"^#{1,6}\s+(.+)",
         content.strip()
     )
-
     heading = heading_match.group(1).lower() if heading_match else ""
 
     content_words = tokenize(content)
     heading_words = tokenize(heading)
 
-    # Direct matches matter more than expanded synonyms.
+    # Score direct matches and expanded synonyms.
     direct_matches = question_words & content_words
     expanded_matches = expanded_words & content_words
 
@@ -176,87 +176,68 @@ def score_chunk(question_words, expanded_words, chunk):
         + len(expanded_matches - question_words)
     )
 
-    # Give relevant headings more weight than body text.
-    score += len(question_words & heading_words) * 5
-    score += len((expanded_words - question_words) & heading_words) * 3
+    # Headings are stronger relevance signals than body text.
+    score += len(question_words & heading_words) * 6
+    score += len((expanded_words - question_words) & heading_words) * 4
 
-    # Prefer actionable diagnostic sections.
-    has_commands = bool(
-        re.search(r"```(?:bash|shell)?", content_lower)
-    )
-
-    if has_commands:
+    # Give a small boost to actionable sections.
+    if re.search(r"```(?:bash|shell)?", content_lower):
         score += 2
 
-    # Boost sections containing useful diagnostic commands.
-    diagnostic_commands = (
-        "df -h",
-        "df -i",
-        "du -",
-        "docker system df",
-        "journalctl --disk-usage",
-        "free -h",
-        "vmstat",
-        "ps aux",
-        "swapon --show",
-        "journalctl -k",
-        "top",
-        "uptime",
-        "mpstat",
-        "iostat",
-        "ip addr",
-        "ip route",
-        "systemctl status",
-    )
-
-    if any(command in content_lower for command in diagnostic_commands):
-        score += 3
-
-    # Detect questions about out-of-memory events.
     query_terms = question_words | expanded_words
 
-    asks_about_oom = (
-        bool(query_terms & {
-            "oom", "out-of-memory", "exhaustion"
-        })
-        or (
-            "memory" in query_terms
-            and bool(query_terms & {
-                "event", "events", "incident", "occurrence",
-                "killed", "kill"
-            })
-        )
+    # Determine the topic of the question.
+    asks_oom = bool(query_terms & {
+        "oom", "out-of-memory", "exhaustion", "event", "events"
+    }) and "memory" in query_terms
+
+    asks_process_memory = (
+        "memory" in query_terms
+        and bool(query_terms & {"process", "processes"})
     )
 
-    # Normalize the heading so hyphenated phrases can match.
-    normalized_heading = (
-        heading.replace("-", " ").replace("_", " ")
-    )
+    asks_swap = bool(query_terms & {"swap", "swapon", "swapping"})
 
-    is_oom_heading = (
-        "out of memory" in normalized_heading
-        or "oom" in heading_words
-    )
+    asks_disk = bool(query_terms & {
+        "disk", "filesystem", "storage", "space", "df", "directory"
+    })
 
-    # Strongly prioritize the dedicated OOM section.
-    if asks_about_oom and is_oom_heading:
-        score += 15
+    asks_cpu = bool(query_terms & {
+        "cpu", "processor", "processing", "load"
+    })
 
-    # Boost relevant kernel logs and OOM evidence.
-    oom_evidence = (
+    # Boost commands only when they match the question's topic.
+    if asks_oom and any(term in content_lower for term in (
         "journalctl -k",
         "oom-kill",
-        "oom killer",
         "killed process",
         "out of memory",
-    )
+    )):
+        score += 8
 
-    if asks_about_oom and any(
-        term in content_lower for term in oom_evidence
-    ):
-        score += 5
+    if asks_process_memory and "ps aux --sort=-%mem" in content_lower:
+        score += 10
 
-    # Avoid introductory sections dominating search results.
+    if asks_swap and "swapon --show" in content_lower:
+        score += 10
+
+    if asks_disk and any(term in content_lower for term in (
+        "df -h", "df -i", "du -", "docker system df"
+    )):
+        score += 8
+
+    if asks_cpu and any(term in content_lower for term in (
+        "top", "uptime", "mpstat", "iostat"
+    )):
+        score += 8
+
+    # Prioritize the dedicated OOM section for OOM questions.
+    normalized_heading = heading.replace("-", " ").replace("_", " ")
+
+    if asks_oom and "out of memory" in normalized_heading:
+        score += 15
+
+    # Penalize introductory sections.
     if heading.startswith(("purpose", "introduction")):
         score -= 5
 
