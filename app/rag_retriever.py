@@ -42,7 +42,6 @@ def load_and_chunk_documents():
             if not section:
                 continue
 
-            # Save each section with its source filename.
             chunks.append({
                 "source": document_path.name,
                 "content": section
@@ -61,14 +60,14 @@ def tokenize(text):
     )
 
 
-# Words that usually add little meaning to a search.
 STOP_WORDS = {
     "a", "an", "the", "is", "are", "am", "do", "does",
     "how", "what", "when", "where", "why", "which",
     "i", "me", "my", "we", "our", "you", "your",
     "to", "of", "in", "on", "for", "and", "or", "it",
     "can", "could", "should", "would", "with", "from",
-    "about", "check", "please", "tell", "show"
+    "about", "check", "please", "tell", "show",
+    "if", "whether", "using", "use", "too"
 }
 
 
@@ -80,11 +79,11 @@ SYNONYMS = {
     "investigate": {
         "diagnose", "inspect", "troubleshoot", "identify"
     },
-    "investigate": {
-        "diagnose", "inspect", "troubleshoot", "identify"
+    "diagnose": {
+        "investigate", "inspect", "troubleshoot"
     },
     "high": {
-        "full", "critical", "excessive"
+        "full", "critical", "excessive", "heavy"
     },
     "disk": {
         "filesystem", "storage", "space"
@@ -98,7 +97,44 @@ SYNONYMS = {
     },
     "logs": {
         "logging", "journal", "journalctl"
-    }
+    },
+    "oom": {
+        "out", "of", "memory", "out-of-memory",
+        "exhaustion", "event", "events"
+    },
+    "out-of-memory": {
+        "oom", "memory", "exhaustion", "event", "events"
+    },
+    "exhaustion": {
+        "oom", "out-of-memory", "memory"
+    },
+    "event": {
+        "events", "incident", "occurrence"
+    },
+    "events": {
+        "event", "incident", "occurrence"
+    },
+    "memory": {
+        "ram", "oom", "out-of-memory"
+    },
+    "ram": {
+        "memory", "oom"
+    },
+    "swap": {
+        "swapon", "swapping"
+    },
+    "cpu": {
+        "processor", "processing"
+    },
+    "network": {
+        "networking", "connectivity", "interface"
+    },
+    "service": {
+        "systemd", "daemon", "services"
+    },
+    "services": {
+        "service", "systemd", "daemon"
+    },
 }
 
 
@@ -140,11 +176,11 @@ def score_chunk(question_words, expanded_words, chunk):
         + len(expanded_matches - question_words)
     )
 
-    # Give extra weight to relevant section headings.
-    score += len(question_words & heading_words) * 4
-    score += len((expanded_words - question_words) & heading_words) * 2
+    # Give relevant headings more weight than body text.
+    score += len(question_words & heading_words) * 5
+    score += len((expanded_words - question_words) & heading_words) * 3
 
-    # Prefer actionable diagnostic sections when appropriate.
+    # Prefer actionable diagnostic sections.
     has_commands = bool(
         re.search(r"```(?:bash|shell)?", content_lower)
     )
@@ -152,15 +188,73 @@ def score_chunk(question_words, expanded_words, chunk):
     if has_commands:
         score += 2
 
-    # Boost sections with relevant diagnostic commands.
-    if any(term in content_lower for term in (
+    # Boost sections containing useful diagnostic commands.
+    diagnostic_commands = (
         "df -h",
         "df -i",
         "du -",
         "docker system df",
-        "journalctl --disk-usage"
-    )):
+        "journalctl --disk-usage",
+        "free -h",
+        "vmstat",
+        "ps aux",
+        "swapon --show",
+        "journalctl -k",
+        "top",
+        "uptime",
+        "mpstat",
+        "iostat",
+        "ip addr",
+        "ip route",
+        "systemctl status",
+    )
+
+    if any(command in content_lower for command in diagnostic_commands):
         score += 3
+
+    # Detect questions about out-of-memory events.
+    query_terms = question_words | expanded_words
+
+    asks_about_oom = (
+        bool(query_terms & {
+            "oom", "out-of-memory", "exhaustion"
+        })
+        or (
+            "memory" in query_terms
+            and bool(query_terms & {
+                "event", "events", "incident", "occurrence",
+                "killed", "kill"
+            })
+        )
+    )
+
+    # Normalize the heading so hyphenated phrases can match.
+    normalized_heading = (
+        heading.replace("-", " ").replace("_", " ")
+    )
+
+    is_oom_heading = (
+        "out of memory" in normalized_heading
+        or "oom" in heading_words
+    )
+
+    # Strongly prioritize the dedicated OOM section.
+    if asks_about_oom and is_oom_heading:
+        score += 15
+
+    # Boost relevant kernel logs and OOM evidence.
+    oom_evidence = (
+        "journalctl -k",
+        "oom-kill",
+        "oom killer",
+        "killed process",
+        "out of memory",
+    )
+
+    if asks_about_oom and any(
+        term in content_lower for term in oom_evidence
+    ):
+        score += 5
 
     # Avoid introductory sections dominating search results.
     if heading.startswith(("purpose", "introduction")):
@@ -221,7 +315,11 @@ if __name__ == "__main__":
     print("Type 'exit' to quit.\n")
 
     while True:
-        question = input("Question: ").strip()
+        try:
+            question = input("Question: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\nRetriever stopped.")
+            break
 
         if question.lower() == "exit":
             print("\nRetriever stopped.")
