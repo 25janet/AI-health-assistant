@@ -1,68 +1,60 @@
 pipeline {
-
     agent any
 
     stages {
 
-        stage('Bash Check') {
+        stage('Checkout and Validate Bash') {
             steps {
-
-                echo 'Checkout repository code'
+                echo 'Checking out repository code'
                 checkout scm
 
-                echo 'Check Bash version'
+                echo 'Checking Bash version'
                 sh 'bash --version'
 
-                echo 'Check Bash syntax'
+                echo 'Checking health-check script syntax'
                 sh 'bash -n monitoring/health_check.sh'
 
-                echo 'Make health_check.sh executable'
+                echo 'Making health-check script executable'
                 sh 'chmod +x monitoring/health_check.sh'
-
-                echo 'Create log directory'
-                sh 'mkdir -p data/raw'
-
-                echo 'Run health check'
-                sh './monitoring/health_check.sh > data/raw/health.log 2>&1'
-
-                echo 'Archive health log'
-                archiveArtifacts artifacts: 'data/raw/health.log'
             }
         }
-
-
-        stage('Python Check') {
-            steps {
-
-                echo 'Check Python version'
-                sh 'python3 --version'
-
-                echo 'Run the Python parser'
-                sh 'python3 monitoring/health_parser.py'
-
-                echo 'Validate generated JSON file'
-                sh 'python3 -m json.tool data/processed/health_report.json'
-            }
-        }
-
 
         stage('Build Docker Image') {
             steps {
-
-                echo 'Building Docker image'
+                echo 'Building Linux Health Check Docker image'
                 sh 'docker compose build'
+            }
+        }
 
-                echo 'Running health check container'
+        stage('Run Health Check in Docker') {
+            steps {
+                echo 'Running health check inside Docker'
                 sh 'docker compose run --rm health-check'
+            }
+        }
+
+        stage('Parse Health Report') {
+            steps {
+                echo 'Checking Python version'
+                sh 'python3 --version'
+
+                echo 'Running the Python health-log parser'
+                sh 'python3 monitoring/health_parser.py'
+
+                echo 'Validating generated JSON report'
+                sh 'python3 -m json.tool data/processed/health_report.json'
+
+                echo 'Archiving health logs and reports'
+                archiveArtifacts(
+                    artifacts: 'data/raw/health.log,data/processed/health_report.json',
+                    allowEmptyArchive: false
+                )
             }
         }
     }
 
-
     post {
-
         success {
-
             echo 'Linux Health Check pipeline completed successfully!'
 
             githubNotify(
@@ -76,9 +68,7 @@ pipeline {
             )
         }
 
-
         failure {
-
             echo 'Linux Health Check pipeline failed!'
 
             githubNotify(
@@ -93,3 +83,4 @@ pipeline {
         }
     }
 }
+
