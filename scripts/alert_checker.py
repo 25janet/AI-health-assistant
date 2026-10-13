@@ -1,6 +1,8 @@
 import json
 import os
 import requests
+from dotenv import load_dotenv
+load_dotenv()
 
 # --------------------------------------------------
 # File paths
@@ -9,7 +11,7 @@ import requests
 HEALTH_REPORT = "data/processed/health_report.json"
 ALERT_LOG = "data/raw/alerts.log"
 STATE_FILE = "data/processed/alert_state.json"
-WEBHOOK_URL = "http://127.0.0.1:5001/webhook"
+WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
 
 # --------------------------------------------------
@@ -165,7 +167,7 @@ if events:
                 timeout=5
             )
 
-            if response.status_code == 200:
+            if response.status_code == [200,204]:
 
                 print("Webhook notification sent.")
 

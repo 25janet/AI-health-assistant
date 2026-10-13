@@ -1,10 +1,17 @@
 name: linux-health-check
 
 services:
+
   health-check:
     build:
       context: .
+      dockerfile: Dockerfile
+
     container_name: health_check
+
+    volumes:
+      - ./data:/app/data
+
     networks:
       - health-net
 
