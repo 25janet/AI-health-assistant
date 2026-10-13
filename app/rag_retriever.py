@@ -215,8 +215,12 @@ def score_chunk(question_words, expanded_words, chunk):
     )):
         score += 8
 
-    if asks_process_memory and "ps aux --sort=-%mem" in content_lower:
-        score += 10
+    if asks_process_memory:
+        if "ps aux --sort=-%mem" in content_lower:
+            score += 15
+
+        if "out-of-memory events" in heading:
+            score -= 8
 
     if asks_swap and "swapon --show" in content_lower:
         score += 10
