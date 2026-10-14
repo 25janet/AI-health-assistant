@@ -270,7 +270,7 @@ def score_chunk(question_words, expanded_words, chunk):
             "resolved" in question.lower() or "problem" in question.lower()
         ):
             if "## 11. Verification" in content_lower:
-                score += 22
+                score += 30
 
     # Prioritize the dedicated OOM section for OOM questions.
     normalized_heading = heading.replace("-", " ").replace("_", " ")
@@ -284,6 +284,9 @@ def score_chunk(question_words, expanded_words, chunk):
 
     if heading.startswith("symptoms"):
         score -= 2
+        # Summary tables mention many topics but often lack detailed procedures.
+    if "## 12. Troubleshooting Summary" in content_lower:
+        score -= 12
 
     return score
 
