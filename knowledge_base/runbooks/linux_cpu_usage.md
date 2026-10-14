@@ -114,6 +114,7 @@ This reports CPU statistics at one-second intervals for five samples.
 
 If `mpstat` is unavailable, the command may require installation of the `sysstat` package using the distribution's package manager and appropriate administrative permissions.
 
+
 Compare the samples instead of relying on one measurement. Sustained low idle time together with high CPU demand provides stronger evidence of CPU saturation than a brief spike.
 
 You can also inspect per-CPU statistics with:
