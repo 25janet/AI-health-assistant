@@ -82,6 +82,9 @@ SYNONYMS = {
     "diagnose": {
         "investigate", "inspect", "troubleshoot"
     },
+    "troubleshoot": {
+        "investigate", "diagnose", "inspect"
+    },
     "high": {
         "full", "critical", "excessive", "heavy"
     },
@@ -127,7 +130,23 @@ SYNONYMS = {
         "processor", "processing"
     },
     "network": {
-        "networking", "connectivity", "interface"
+        "networking", "connectivity", "interface",
+        "ip", "route", "gateway", "firewall"
+    },
+    "networking": {
+        "network", "connectivity", "interface"
+    },
+    "interface": {
+        "interfaces", "link", "device"
+    },
+    "connectivity": {
+        "network", "networking", "connection", "ping"
+    },
+    "firewall": {
+        "iptables", "nft", "traffic", "filtering"
+    },
+    "gateway": {
+        "route", "routing", "default"
     },
     "service": {
         "systemd", "daemon", "services"
@@ -152,7 +171,6 @@ def expand_query(question):
 # 5. Score how relevant each section is to a question
 # ------------------------------------------------------------
 
-
 def score_chunk(question_words, expanded_words, chunk):
     content = chunk["content"]
     content_lower = content.lower()
@@ -162,7 +180,14 @@ def score_chunk(question_words, expanded_words, chunk):
         r"^#{1,6}\s+(.+)",
         content.strip()
     )
-    heading = heading_match.group(1).lower() if heading_match else ""
+
+    heading = (
+        heading_match.group(1).lower()
+        if heading_match
+        else ""
+    )
+
+    heading_lower = heading.lower()
 
     content_words = tokenize(content)
     heading_words = tokenize(heading)
@@ -178,7 +203,9 @@ def score_chunk(question_words, expanded_words, chunk):
 
     # Headings are stronger relevance signals than body text.
     score += len(question_words & heading_words) * 6
-    score += len((expanded_words - question_words) & heading_words) * 4
+    score += len(
+        (expanded_words - question_words) & heading_words
+    ) * 4
 
     # Give a small boost to actionable sections.
     if re.search(r"```(?:bash|shell)?", content_lower):
@@ -187,26 +214,40 @@ def score_chunk(question_words, expanded_words, chunk):
     query_terms = question_words | expanded_words
 
     # Determine the topic of the question.
-    asks_oom = bool(query_terms & {
-        "oom", "out-of-memory", "exhaustion", "event", "events"
-    }) and "memory" in query_terms
+    asks_oom = (
+        bool(query_terms & {
+            "oom", "out-of-memory", "exhaustion", "event", "events"
+        })
+        and "memory" in query_terms
+    )
 
     asks_process_memory = (
         "memory" in query_terms
         and bool(query_terms & {"process", "processes"})
     )
 
-    asks_swap = bool(query_terms & {"swap", "swapon", "swapping"})
+    asks_swap = bool(
+        query_terms & {"swap", "swapon", "swapping"}
+    )
 
-    asks_disk = bool(query_terms & {
-        "disk", "filesystem", "storage", "space", "df", "directory"
-    })
+    asks_disk = bool(
+        query_terms & {
+            "disk", "filesystem", "storage", "space",
+            "df", "directory"
+        }
+    )
 
-    asks_cpu = bool(query_terms & {
-        "cpu", "processor", "processing", "load"
-    })
+    asks_cpu = bool(
+        query_terms & {"cpu", "processor", "processing", "load"}
+    )
 
-    # Boost commands only when they match the question's topic.
+    # Use the full question for intent-specific matching.
+    question_lower = " ".join(question_words).lower()
+
+    # --------------------------------------------------------
+    # Memory troubleshooting
+    # --------------------------------------------------------
+
     if asks_oom and any(term in content_lower for term in (
         "journalctl -k",
         "oom-kill",
@@ -219,58 +260,261 @@ def score_chunk(question_words, expanded_words, chunk):
         if "ps aux --sort=-%mem" in content_lower:
             score += 15
 
-        if "out-of-memory events" in heading:
+        if "out-of-memory events" in heading_lower:
             score -= 8
 
     if asks_swap and "swapon --show" in content_lower:
         score += 10
 
+    # --------------------------------------------------------
+    # Disk troubleshooting
+    # --------------------------------------------------------
+
     if asks_disk and any(term in content_lower for term in (
-        "df -h", "df -i", "du -", "docker system df"
+        "df -h",
+        "df -i",
+        "du -",
+        "docker system df",
     )):
         score += 8
 
-        # Improve retrieval for specific CPU troubleshooting questions.
+    # --------------------------------------------------------
+    # CPU troubleshooting
+    # --------------------------------------------------------
+
     if asks_cpu:
-        # Per-core CPU monitoring
-        if any(term in question.lower() for term in (
-            "individual cores", "per core", "each core", "individual cpu"
+        # Per-core CPU monitoring.
+        if any(term in question_lower for term in (
+            "individual cores",
+            "per core",
+            "each core",
+            "individual cpu",
         )):
-            if "per-cpu" in content_lower or "individual cpu" in content_lower:
+            if any(term in content_lower for term in (
+                "per-cpu",
+                "individual cpu",
+                "mpstat -p all",
+            )):
                 score += 18
 
-        # systemd service troubleshooting
-        if "systemd service" in question.lower() or "service causing" in question.lower():
+        # systemd service troubleshooting.
+        if (
+            "systemd service" in question_lower
+            or "service causing" in question_lower
+        ):
             if "systemctl status" in content_lower:
                 score += 18
+
             if "journalctl" in content_lower:
                 score += 10
 
-        # CPU troubleshooting through logs
-        if "linux logs" in question.lower() or "using linux logs" in question.lower():
+        # CPU troubleshooting through logs.
+        if (
+            "linux logs" in question_lower
+            or "using linux logs" in question_lower
+        ):
             if "journalctl" in content_lower:
                 score += 18
 
-        # Distinguish memory pressure from disk I/O
-        if "memory or disk i/o" in question.lower() or "disk i/o" in question.lower():
+        # Distinguish memory pressure from disk I/O.
+        if (
+            "memory or disk i/o" in question_lower
+            or "disk i/o" in question_lower
+        ):
             if "vmstat" in content_lower:
                 score += 14
+
             if "wa" in content_lower or "i/o" in content_lower:
                 score += 8
 
-        # Excessive CPU consumption by a process
-        if "too much cpu" in question.lower() or "process is using" in question.lower():
+        # Excessive CPU consumption by a process.
+        if (
+            "too much cpu" in question_lower
+            or "process is using" in question_lower
+        ):
             if "ps aux --sort=-%cpu" in content_lower:
                 score += 18
-            if "corrective actions" in content_lower or "safe corrective actions" in content_lower:
+
+            if (
+                "corrective actions" in content_lower
+                or "safe corrective actions" in content_lower
+            ):
                 score += 8
 
-        # Verify that the problem has been resolved
-        if "verify" in question.lower() and (
-            "resolved" in question.lower() or "problem" in question.lower()
+        # Verify that the CPU problem has been resolved.
+        if (
+            "verify" in question_lower
+            and (
+                "resolved" in question_lower
+                or "problem" in question_lower
+            )
         ):
-            if "## 11. Verification" in content_lower:
+            if "## 11. verification" in content_lower:
                 score += 30
+
+    # --------------------------------------------------------
+    # Networking troubleshooting
+    # --------------------------------------------------------
+
+    asks_network_interface = (
+        "interface" in query_terms
+        and bool(query_terms & {"up", "link", "status"})
+    )
+
+    asks_missing_ip = (
+        bool(query_terms & {"missing", "incorrect", "configuration"})
+        and bool(query_terms & {"ip", "address", "network"})
+    )
+
+    asks_default_route = (
+        "default route" in question_lower
+        or "incorrect gateway" in question_lower
+        or (
+            "gateway" in query_terms
+            and "route" in query_terms
+        )
+    )
+
+    asks_firewall = (
+        "firewall" in query_terms
+        and bool(query_terms & {
+            "blocking", "traffic", "iptables", "nft"
+        })
+    )
+
+    asks_network_logs = (
+        "network" in query_terms
+        and "logs" in query_terms
+    )
+
+    asks_network_verification = (
+        "verify" in query_terms
+        and bool(query_terms & {
+            "resolved", "resolution", "problem"
+        })
+        and (
+            "network" in query_terms
+            or "networking" in query_terms
+        )
+    )
+
+    asks_tcp_port = (
+        bool(query_terms & {"tcp", "remote"})
+        and bool(query_terms & {"port", "reachable", "reachability"})
+    )
+
+    asks_listening_port = (
+        "listening" in query_terms
+        and "port" in query_terms
+    )
+
+    asks_dns = (
+        "dns" in query_terms
+        or "resolution" in query_terms
+        or "resolving" in query_terms
+    )
+
+    # Network interface status.
+    if asks_network_interface:
+        if "ip link show" in content_lower:
+            score += 18
+
+        if "ip -br addr" in content_lower:
+            score += 8
+
+    # Missing IP address or incorrect interface configuration.
+    # Missing IP address or incorrect interface configuration.
+    if asks_missing_ip:
+        # Strongly prioritize the section that explains
+        # how to inspect interface addresses.
+        if "ip -br addr" in content_lower:
+            score += 30
+
+        if "ip addr show" in content_lower:
+            score += 20
+
+        # The routing section is useful as a secondary check,
+        # but should not outrank interface inspection.
+        if "ip route show" in content_lower:
+            score += 3
+
+        # Verification is useful after making a correction,
+        # not as the primary diagnostic procedure.
+        if "## 12. verification" in content_lower:
+            score -= 15
+    # Default route and gateway.
+    if asks_default_route:
+        if "ip route show" in content_lower:
+            score += 18
+
+        if "ip route get" in content_lower:
+            score += 10
+
+    # Firewall rules.
+    if asks_firewall:
+        if "nft list ruleset" in content_lower:
+            score += 18
+
+        if "iptables -l -n -v" in content_lower:
+            score += 12
+
+    # Network-related logs.
+    if asks_network_logs:
+        if "journalctl" in content_lower:
+            score += 12
+
+        if "journalctl -k" in content_lower:
+            score += 6
+
+        if "systemctl status" in content_lower:
+            score += 5
+
+    # Verify resolution of a networking problem.
+    if asks_network_verification:
+        if "## 12. verification" in content_lower:
+            score += 25
+
+        if "verification" in heading_lower:
+            score += 12
+
+    # Test whether a remote TCP port is reachable.
+    if asks_tcp_port:
+        if "nc -vz" in content_lower:
+            score += 20
+
+    # Check whether a service is listening on a port.
+    if asks_listening_port:
+        if "ss -tulpn" in content_lower:
+            score += 20
+
+        if "ss -ltnp" in content_lower:
+            score += 15
+
+    # DNS resolution troubleshooting.
+    if asks_dns:
+        if "getent hosts" in content_lower:
+            score += 18
+
+        if "resolvectl status" in content_lower:
+            score += 10
+
+        if "/etc/resolv.conf" in content_lower:
+            score += 8
+
+    # Connectivity tests should favor the connectivity section.
+    asks_connectivity = (
+        "connectivity" in query_terms
+        or "ping" in query_terms
+        or "internet" in query_terms
+    )
+
+    if asks_connectivity:
+        if "ping -c 4" in content_lower:
+            score += 10
+
+    # --------------------------------------------------------
+    # General prioritization and penalties
+    # --------------------------------------------------------
 
     # Prioritize the dedicated OOM section for OOM questions.
     normalized_heading = heading.replace("-", " ").replace("_", " ")
@@ -282,10 +526,12 @@ def score_chunk(question_words, expanded_words, chunk):
     if heading.startswith(("purpose", "introduction")):
         score -= 5
 
+    # Reduce the score of generic symptoms sections.
     if heading.startswith("symptoms"):
         score -= 2
-        # Summary tables mention many topics but often lack detailed procedures.
-    if "## 12. Troubleshooting Summary" in content_lower:
+
+    # Summary tables mention many topics but often lack detailed procedures.
+    if "troubleshooting summary" in heading_lower:
         score -= 12
 
     return score
@@ -336,12 +582,17 @@ if __name__ == "__main__":
     print(f"\nKnowledge base: {KNOWLEDGE_BASE_DIR}")
     print(f"Loaded {len(document_chunks)} chunks.")
 
+    if not document_chunks:
+        print("No Markdown runbooks were loaded.")
+        raise SystemExit(1)
+
     print("\nAsk a question about Linux troubleshooting.")
     print("Type 'exit' to quit.\n")
 
     while True:
         try:
             question = input("Question: ").strip()
+
         except (EOFError, KeyboardInterrupt):
             print("\nRetriever stopped.")
             break
