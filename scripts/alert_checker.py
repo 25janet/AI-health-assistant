@@ -155,8 +155,7 @@ if events:
         print(event)
 
         payload = {
-            "alert": event,
-            "date": date
+            "content": f"**Linux Health Monitor**\n{event}\nDate: {date}"
         }
 
         try:
@@ -167,7 +166,7 @@ if events:
                 timeout=5
             )
 
-            if response.status_code == [200,204]:
+            if response.status_code in (200,204):
 
                 print("Webhook notification sent.")
 
